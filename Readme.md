@@ -1,0 +1,21 @@
+
+How to run
+```
+python main.py --instance instances/instance_4.json --local-search both --show-savings
+```
+
+# Project Structure
+EVRP-SCS-and-DWC-CW/
+├── main.py              # Entry point with CLI args
+├── config.py            # Constants, defaults, penalties
+├── graph.py             # Graph loading + Dijkstra shortest path
+├── energy.py            # Energy consumption (Eq 7), DWC (Eq 8), charging time (Eq 4.4)
+├── simulator.py         # Route decoder — full simulation with charging logic
+├── savings.py           # Clarke & Wright savings computation + route merging
+├── local_search.py      # 2-opt and Or-opt post-optimization
+├── logger.py            # Formatted console output & trail printing
+└── instances/
+    ├── instance_1.json  # Trivial (1 customer, no charging)
+    ├── instance_2.json  # 2 customers + CS, weight reduction
+    ├── instance_3.json  # 2 customers + electric road (DWC)
+    └── instance_4.json  # Stress: 5 customers, 2 CSs, 2 e-roads
