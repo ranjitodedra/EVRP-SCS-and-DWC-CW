@@ -19,3 +19,12 @@ EVRP-SCS-and-DWC-CW/
     ├── instance_2.json  # 2 customers + CS, weight reduction
     ├── instance_3.json  # 2 customers + electric road (DWC)
     └── instance_4.json  # Stress: 5 customers, 2 CSs, 2 e-roads
+
+# Auto-detect workers (default)
+python main.py --instance instances/40c_20bss_100total.json --local-search both
+
+# Explicit worker count
+python main.py --instance instances/40c_20bss_100total.json --local-search both --workers 8
+
+# Sequential (baseline)
+python main.py --instance instances/40c_20bss_100total.json --local-search both --workers 1

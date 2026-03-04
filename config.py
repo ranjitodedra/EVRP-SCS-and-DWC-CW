@@ -46,3 +46,6 @@ CW_DEFAULTS = {
 # ── Penalty constants ──────────────────────────────────────────
 PENALTY_BATTERY_DEAD = 99999
 PENALTY_UNREACHABLE = 99999
+
+# ── Parallelisation ───────────────────────────────────────────
+PARALLEL_WORKERS = None          # None → auto-detect via os.cpu_count()

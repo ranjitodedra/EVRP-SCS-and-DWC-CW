@@ -7,6 +7,7 @@ Usage
 ─────
   python main.py --instance instances/instance_1.json
   python main.py --instance instances/instance_3.json --local-search both
+  python main.py --instance instances/instance_3.json --workers 4
 """
 
 from __future__ import annotations
@@ -20,7 +21,7 @@ from simulator import Simulator
 from savings import clarke_wright, compute_savings_matrix
 from local_search import two_opt, or_opt
 from logger import print_summary, print_top_savings
-from config import CW_DEFAULTS
+from config import CW_DEFAULTS, PARALLEL_WORKERS
 
 
 def parse_args():
@@ -45,6 +46,8 @@ def parse_args():
                    default=CW_DEFAULTS["random_seed"])
     p.add_argument("--show-savings", action="store_true",
                    help="Print top-10 savings pairs")
+    p.add_argument("--workers", type=int, default=PARALLEL_WORKERS,
+                   help="Number of parallel workers (default: auto-detect CPU count)")
     return p.parse_args()
 
 
@@ -53,6 +56,8 @@ def main():
     random.seed(args.seed)
 
     t_start = time.perf_counter()
+
+    workers = args.workers          # None → auto-detect inside each module
 
     # ── load instance ──────────────────────────────────────────
     graph = Graph()
@@ -68,9 +73,10 @@ def main():
 
     # ── savings computation ────────────────────────────────────
     t_sav_start = time.perf_counter()
-    savings_list = compute_savings_matrix(graph, args.savings_metric)
+    savings_list = compute_savings_matrix(graph, args.savings_metric,
+                                         workers=workers)
     customer_order, cw_result = clarke_wright(
-        graph, sim, args.savings_metric,
+        graph, sim, args.savings_metric, workers=workers,
     )
     t_sav = time.perf_counter() - t_sav_start
 
@@ -90,11 +96,11 @@ def main():
 
     if ls_mode in ("2opt", "both"):
         best_order, best_result = two_opt(
-            best_order, sim, max_it, thresh,
+            best_order, sim, max_it, thresh, workers=workers,
         )
     if ls_mode in ("oropt", "both"):
         best_order, best_result = or_opt(
-            best_order, sim, max_it, thresh,
+            best_order, sim, max_it, thresh, workers=workers,
         )
 
     t_ls = time.perf_counter() - t_ls_start

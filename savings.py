@@ -10,29 +10,84 @@ Clarke & Wright Savings Algorithm.
 
 from __future__ import annotations
 
+import heapq
+import os
+import warnings
+from concurrent.futures import ProcessPoolExecutor
 from typing import List, Tuple
 
 from simulator import Simulator, RouteResult
 
 
+# ── standalone Dijkstra (picklable for ProcessPoolExecutor) ────
+
+def _dijkstra_worker(adj: dict, source: str) -> Tuple[str, dict]:
+    """
+    Run Dijkstra from *source* using the raw adjacency dict.
+
+    Returns ``(source, {node: distance})`` so the caller can reconstruct
+    the ``dist_from`` mapping.
+    """
+    dist = {source: 0}
+    counter = 0
+    pq = [(0, counter, source)]
+
+    while pq:
+        d, _, u = heapq.heappop(pq)
+        if d > dist.get(u, float("inf")):
+            continue
+        for v, edata in adj.get(u, []):
+            nd = d + edata["distance"]
+            if nd < dist.get(v, float("inf")):
+                dist[v] = nd
+                counter += 1
+                heapq.heappush(pq, (nd, counter, v))
+    return source, dist
+
+
 # ── savings computation ────────────────────────────────────────
 
-def compute_savings_matrix(graph, metric: str = "distance"):
+def compute_savings_matrix(graph, metric: str = "distance", *,
+                           workers: int | None = None):
     """
     Return a sorted list of ``(saving, ci, cj)`` tuples (descending).
 
     *metric* may be ``"distance"`` (default), ``"time"``, or
     ``"objective"``.  Only ``"distance"`` is fully implemented here;
     the other two are placeholders that fall back to distance.
+
+    *workers* controls parallelism for the Dijkstra fan-out:
+    ``None`` → auto-detect CPU count, ``1`` → sequential.
     """
     depot = graph.depot
     customers = list(graph.customers)
+    sources = [depot] + customers
 
-    # one Dijkstra per relevant source → {target: dist}
-    dist_from: dict = {}
-    for node in [depot] + customers:
-        dist_from[node] = graph.dijkstra_all(node)
+    # ── parallel Dijkstra fan-out ──────────────────────────────
+    n_workers = workers if workers is not None else os.cpu_count()
+    # fall back to sequential for tiny instances or 1 worker
+    if n_workers is None or n_workers <= 1 or len(sources) <= 2:
+        dist_from: dict = {}
+        for node in sources:
+            dist_from[node] = graph.dijkstra_all(node)
+    else:
+        try:
+            adj = graph.adj                        # plain dict — picklable
+            dist_from = {}
+            with ProcessPoolExecutor(max_workers=n_workers) as pool:
+                futures = [pool.submit(_dijkstra_worker, adj, src)
+                           for src in sources]
+                for fut in futures:
+                    src, dmap = fut.result()
+                    dist_from[src] = dmap
+        except Exception as exc:
+            warnings.warn(f"Parallel Dijkstra failed ({exc}); "
+                          f"falling back to sequential.")
+            dist_from = {}
+            for node in sources:
+                dist_from[node] = graph.dijkstra_all(node)
 
+    # ── build savings list (unchanged logic) ───────────────────
     savings: List[Tuple[float, str, str]] = []
     for ci in customers:
         for cj in customers:
@@ -62,7 +117,8 @@ def compute_savings_matrix(graph, metric: str = "distance"):
 # ── route merging ──────────────────────────────────────────────
 
 def clarke_wright(graph, simulator: Simulator,
-                  metric: str = "distance") -> Tuple[list, RouteResult]:
+                  metric: str = "distance", *,
+                  workers: int | None = None) -> Tuple[list, RouteResult]:
     """
     Run the Clarke & Wright Savings heuristic.
 
@@ -80,7 +136,7 @@ def clarke_wright(graph, simulator: Simulator,
         return list(customers), result
 
     # Step 1 — savings
-    savings = compute_savings_matrix(graph, metric)
+    savings = compute_savings_matrix(graph, metric, workers=workers)
 
     # Step 2 — one shuttle route per customer:  D → Li → D
     route_id = 0
