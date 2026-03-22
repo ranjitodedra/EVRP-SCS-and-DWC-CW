@@ -1,0 +1,139 @@
+{
+  "nodes": [
+    {
+      "id": "D",
+      "type": "depot"
+    },
+    {
+      "id": "1",
+      "type": "intersection"
+    },
+    {
+      "id": "2",
+      "type": "intersection"
+    },
+    {
+      "id": "L1",
+      "type": "customer"
+    },
+    {
+      "id": "L2",
+      "type": "customer"
+    },
+    {
+      "id": "L3",
+      "type": "customer"
+    },
+    {
+      "id": "CS1",
+      "type": "charging_station"
+    },
+    {
+      "id": "CS2",
+      "type": "charging_station"
+    }
+  ],
+  "edges": [
+    {
+      "from": "D",
+      "to": "1",
+      "distance": 5.97,
+      "traffic_factor": 0.83,
+      "type": "normal"
+    },
+    {
+      "from": "D",
+      "to": "2",
+      "distance": 5.97,
+      "traffic_factor": 0.83,
+      "type": "normal"
+    },
+    {
+      "from": "1",
+      "to": "2",
+      "distance": 3.12,
+      "traffic_factor": 0.83,
+      "type": "normal"
+    },
+    {
+      "from": "1",
+      "to": "L3",
+      "distance": 4.23,
+      "traffic_factor": 0.89,
+      "type": "normal"
+    },
+    {
+      "from": "2",
+      "to": "L1",
+      "distance": 7.95,
+      "traffic_factor": 0.9,
+      "type": "normal"
+    },
+    {
+      "from": "2",
+      "to": "L3",
+      "distance": 3.82,
+      "traffic_factor": 0.78,
+      "type": "normal"
+    },
+    {
+      "from": "L1",
+      "to": "L2",
+      "distance": 4.1,
+      "traffic_factor": 0.73,
+      "type": "normal"
+    },
+    {
+      "from": "L2",
+      "to": "L3",
+      "distance": 4.27,
+      "traffic_factor": 0.94,
+      "type": "normal"
+    },
+    {
+      "from": "L2",
+      "to": "CS1",
+      "distance": 6.62,
+      "traffic_factor": 0.86,
+      "type": "normal"
+    },
+    {
+      "from": "L2",
+      "to": "CS2",
+      "distance": 5.24,
+      "traffic_factor": 0.97,
+      "type": "normal"
+    },
+    {
+      "from": "L3",
+      "to": "CS1",
+      "distance": 7.7,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "CS1",
+      "to": "CS2",
+      "distance": 5.59,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    }
+  ],
+  "base_speed": 50,
+  "initial_battery_percent": 100,
+  "starting_node": "D",
+  "battery_capacity": 100,
+  "vehicle_mass": 1800,
+  "rolling_resistance": 0.01,
+  "drag_coefficient": 0.6,
+  "cross_sectional_area": 3.5,
+  "mass_factor": 1.1,
+  "package_weight": 5,
+  "charging_power": 100,
+  "charging_efficiency": 0.95,
+  "dwc_power": 20,
+  "dwc_efficiency": 0.85,
+  "electric_road_speed": 50,
+  "air_density": 1.205,
+  "angle": 0.86
+}

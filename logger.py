@@ -5,6 +5,30 @@ Formatted console output and optional CSV / savings-matrix printing.
 from __future__ import annotations
 
 from simulator import RouteResult
+from config import BASE_SPEED, BATTERY_THRESHOLD
+
+
+# ── network / instance statistics ─────────────────────────────
+
+def print_network_statistics(graph) -> None:
+    """Print node counts, edge count, base speed, and battery threshold."""
+    n_customers = len(graph.customers)
+    n_cs = len(graph.charging_stations)
+    n_intersections = sum(
+        1 for n in graph.nodes.values() if n.get("type") == "intersection"
+    )
+    n_nodes = len(graph.nodes)
+    n_edges = sum(len(nbrs) for nbrs in graph.adj.values())
+    base_speed = float(graph.params.get("base_speed", BASE_SPEED))
+    thresh_pct = BATTERY_THRESHOLD * 100.0
+
+    print(f"Number of Customers: {n_customers}")
+    print(f"Number of Charging Stations: {n_cs}")
+    print(f"Number of Intersections: {n_intersections}")
+    print(f"Total Number of Nodes: {n_nodes}")
+    print(f"Total Number of Edges: {n_edges}")
+    print(f"Base Speed: {base_speed:.2f} km/h")
+    print(f"Battery Threshold: {thresh_pct:.1f}%")
 
 
 # ── main summary ───────────────────────────────────────────────

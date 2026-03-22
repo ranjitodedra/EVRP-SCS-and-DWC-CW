@@ -28,3 +28,6 @@ python main.py --instance instances/40c_20bss_100total.json --local-search both 
 
 # Sequential (baseline)
 python main.py --instance instances/40c_20bss_100total.json --local-search both --workers 1
+
+# Save SUMO run output to a text file
+python main.py --sumo-cfg "C:\Users\ranji\Documents\Projects\sumo\sumo.sumocfg" --customers 200 --cs-ratio 0.15 --electric-road-fraction 0.20 --traffic-min 0.6 --traffic-max 1.0 --sumo-seed 42 --local-search none --output-txt outputs\sumo_run_200.txt

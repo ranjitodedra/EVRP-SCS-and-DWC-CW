@@ -1,0 +1,318 @@
+{
+  "nodes": [
+    {
+      "id": "D",
+      "type": "depot"
+    },
+    {
+      "id": "1",
+      "type": "intersection"
+    },
+    {
+      "id": "2",
+      "type": "intersection"
+    },
+    {
+      "id": "L1",
+      "type": "customer"
+    },
+    {
+      "id": "CS1",
+      "type": "charging_station"
+    },
+    {
+      "id": "3",
+      "type": "intersection"
+    },
+    {
+      "id": "4",
+      "type": "intersection"
+    },
+    {
+      "id": "L2",
+      "type": "customer"
+    },
+    {
+      "id": "L3",
+      "type": "customer"
+    },
+    {
+      "id": "L4",
+      "type": "customer"
+    },
+    {
+      "id": "5",
+      "type": "intersection"
+    },
+    {
+      "id": "6",
+      "type": "intersection"
+    },
+    {
+      "id": "L5",
+      "type": "customer"
+    },
+    {
+      "id": "CS2",
+      "type": "charging_station"
+    },
+    {
+      "id": "L6",
+      "type": "customer"
+    },
+    {
+      "id": "CS3",
+      "type": "charging_station"
+    }
+  ],
+  "edges": [
+    {
+      "from": "D",
+      "to": "1",
+      "distance": 7.86,
+      "traffic_factor": 0.84,
+      "type": "normal"
+    },
+    {
+      "from": "D",
+      "to": "2",
+      "distance": 7.86,
+      "traffic_factor": 0.84,
+      "type": "normal"
+    },
+    {
+      "from": "1",
+      "to": "2",
+      "distance": 6.1,
+      "traffic_factor": 0.72,
+      "type": "normal"
+    },
+    {
+      "from": "1",
+      "to": "4",
+      "distance": 3.18,
+      "traffic_factor": 0.97,
+      "type": "normal"
+    },
+    {
+      "from": "1",
+      "to": "6",
+      "distance": 6.98,
+      "traffic_factor": 0.66,
+      "type": "normal"
+    },
+    {
+      "from": "1",
+      "to": "CS2",
+      "distance": 5.38,
+      "traffic_factor": 0.81,
+      "type": "normal"
+    },
+    {
+      "from": "2",
+      "to": "L1",
+      "distance": 6.11,
+      "traffic_factor": 0.87,
+      "type": "normal"
+    },
+    {
+      "from": "2",
+      "to": "6",
+      "distance": 6.79,
+      "traffic_factor": 0.92,
+      "type": "normal"
+    },
+    {
+      "from": "2",
+      "to": "L5",
+      "distance": 3.95,
+      "traffic_factor": 0.77,
+      "type": "normal"
+    },
+    {
+      "from": "L1",
+      "to": "3",
+      "distance": 4.88,
+      "traffic_factor": 0.71,
+      "type": "normal"
+    },
+    {
+      "from": "L1",
+      "to": "L2",
+      "distance": 3.12,
+      "traffic_factor": 0.89,
+      "type": "normal"
+    },
+    {
+      "from": "L1",
+      "to": "6",
+      "distance": 6.26,
+      "traffic_factor": 0.77,
+      "type": "normal"
+    },
+    {
+      "from": "L1",
+      "to": "L5",
+      "distance": 6.93,
+      "traffic_factor": 0.76,
+      "type": "normal"
+    },
+    {
+      "from": "CS1",
+      "to": "L4",
+      "distance": 3.34,
+      "traffic_factor": 0.88,
+      "type": "normal"
+    },
+    {
+      "from": "CS1",
+      "to": "5",
+      "distance": 5.52,
+      "traffic_factor": 0.82,
+      "type": "normal"
+    },
+    {
+      "from": "CS1",
+      "to": "L6",
+      "distance": 3.4,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "CS1",
+      "to": "CS3",
+      "distance": 7.37,
+      "traffic_factor": 0.95,
+      "type": "normal"
+    },
+    {
+      "from": "3",
+      "to": "L2",
+      "distance": 5.45,
+      "traffic_factor": 0.67,
+      "type": "normal"
+    },
+    {
+      "from": "3",
+      "to": "L5",
+      "distance": 6.18,
+      "traffic_factor": 0.97,
+      "type": "normal"
+    },
+    {
+      "from": "3",
+      "to": "L6",
+      "distance": 7.33,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "3",
+      "to": "CS3",
+      "distance": 7.53,
+      "traffic_factor": 0.73,
+      "type": "normal"
+    },
+    {
+      "from": "4",
+      "to": "L3",
+      "distance": 4.06,
+      "traffic_factor": 0.95,
+      "type": "normal"
+    },
+    {
+      "from": "4",
+      "to": "6",
+      "distance": 6.11,
+      "traffic_factor": 0.64,
+      "type": "normal"
+    },
+    {
+      "from": "4",
+      "to": "CS2",
+      "distance": 3.57,
+      "traffic_factor": 0.83,
+      "type": "normal"
+    },
+    {
+      "from": "L2",
+      "to": "CS3",
+      "distance": 4.92,
+      "traffic_factor": 0.92,
+      "type": "normal"
+    },
+    {
+      "from": "L3",
+      "to": "L4",
+      "distance": 7.99,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "L3",
+      "to": "CS2",
+      "distance": 4.96,
+      "traffic_factor": 0.71,
+      "type": "normal"
+    },
+    {
+      "from": "L3",
+      "to": "L6",
+      "distance": 4.92,
+      "traffic_factor": 0.96,
+      "type": "normal"
+    },
+    {
+      "from": "L4",
+      "to": "5",
+      "distance": 5.96,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "L4",
+      "to": "L6",
+      "distance": 5.18,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "L4",
+      "to": "CS3",
+      "distance": 5.28,
+      "traffic_factor": 1.0,
+      "type": "electric"
+    },
+    {
+      "from": "6",
+      "to": "L5",
+      "distance": 4.01,
+      "traffic_factor": 0.91,
+      "type": "normal"
+    },
+    {
+      "from": "L6",
+      "to": "CS3",
+      "distance": 6.16,
+      "traffic_factor": 0.85,
+      "type": "normal"
+    }
+  ],
+  "base_speed": 50,
+  "initial_battery_percent": 100,
+  "starting_node": "D",
+  "battery_capacity": 100,
+  "vehicle_mass": 1800,
+  "rolling_resistance": 0.01,
+  "drag_coefficient": 0.6,
+  "cross_sectional_area": 3.5,
+  "mass_factor": 1.1,
+  "package_weight": 5,
+  "charging_power": 100,
+  "charging_efficiency": 0.95,
+  "dwc_power": 20,
+  "dwc_efficiency": 0.85,
+  "electric_road_speed": 50,
+  "air_density": 1.205,
+  "angle": 0.86
+}

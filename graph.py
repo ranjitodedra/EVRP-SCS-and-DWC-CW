@@ -63,6 +63,8 @@ class Graph:
                 "traffic_factor": edge["traffic_factor"],
                 "type":           edge["type"],
             }
+            if "sumo_edge_id" in edge:
+                edge_data["sumo_edge_id"] = edge["sumo_edge_id"]
             self.adj[src].append((dst, edge_data))
 
             # Normal roads → also add the reverse direction
@@ -89,6 +91,84 @@ class Graph:
             "air_density":             data.get("air_density",             AIR_DENSITY),
             "angle":                   data.get("angle",                   ROAD_ANGLE_DEG),
         }
+
+    def load_from_sumo_data(self, nodes_list: list, edges_list: list, params_dict: dict) -> None:
+        """Populate graph from in-memory SUMO-converted structures."""
+        self.nodes = {}
+        self.adj = {}
+        self.customers = []
+        self.depot = None
+        self.charging_stations = []
+        self.electric_road_starts = []
+        self.electric_road_ends = []
+        self.params = {}
+
+        for node in nodes_list:
+            nid = node["id"]
+            self.nodes[nid] = node
+            self.adj.setdefault(nid, [])
+            ntype = node["type"]
+            if ntype == "depot":
+                self.depot = nid
+            elif ntype == "customer":
+                self.customers.append(nid)
+            elif ntype == "charging_station":
+                self.charging_stations.append(nid)
+            elif ntype == "electric_road_start":
+                self.electric_road_starts.append(nid)
+            elif ntype == "electric_road_end":
+                self.electric_road_ends.append(nid)
+
+        for edge in edges_list:
+            src, dst = edge["from"], edge["to"]
+            edge_data = {
+                "distance": edge["distance"],
+                "traffic_factor": edge["traffic_factor"],
+                "type": edge["type"],
+            }
+            if "sumo_edge_id" in edge:
+                edge_data["sumo_edge_id"] = edge["sumo_edge_id"]
+
+            self.adj.setdefault(src, [])
+            self.adj.setdefault(dst, [])
+            self.adj[src].append((dst, edge_data))
+            if edge["type"] == "normal":
+                self.adj[dst].append((src, edge_data))
+
+        self.params = {
+            "base_speed":              params_dict.get("base_speed",              BASE_SPEED),
+            "initial_battery_percent": params_dict.get("initial_battery_percent", INITIAL_BATTERY_PERCENT),
+            "starting_node":           params_dict.get("starting_node",           self.depot or "D"),
+            "battery_capacity":        params_dict.get("battery_capacity",        BATTERY_CAPACITY),
+            "vehicle_mass":            params_dict.get("vehicle_mass",            VEHICLE_MASS),
+            "rolling_resistance":      params_dict.get("rolling_resistance",      ROLLING_RESISTANCE),
+            "drag_coefficient":        params_dict.get("drag_coefficient",        DRAG_COEFFICIENT),
+            "cross_sectional_area":    params_dict.get("cross_sectional_area",    CROSS_SECTIONAL_AREA),
+            "mass_factor":             params_dict.get("mass_factor",             MASS_FACTOR),
+            "package_weight":          params_dict.get("package_weight",          PACKAGE_WEIGHT),
+            "charging_power":          params_dict.get("charging_power",          CHARGING_POWER),
+            "charging_efficiency":     params_dict.get("charging_efficiency",     CHARGING_EFFICIENCY),
+            "dwc_power":               params_dict.get("dwc_power",              DWC_POWER),
+            "dwc_efficiency":          params_dict.get("dwc_efficiency",          DWC_EFFICIENCY),
+            "electric_road_speed":     params_dict.get("electric_road_speed",     ELECTRIC_ROAD_SPEED),
+            "air_density":             params_dict.get("air_density",             AIR_DENSITY),
+            "angle":                   params_dict.get("angle",                   ROAD_ANGLE_DEG),
+        }
+
+    def update_traffic_factors(self, traci_bridge, base_speed: float) -> None:
+        """Refresh edge traffic factors from SUMO TraCI using sumo_edge_id metadata."""
+        if not traci_bridge or not traci_bridge.is_connected():
+            return
+        for src in self.adj:
+            updated = []
+            for dst, edge_data in self.adj[src]:
+                sumo_edge_id = edge_data.get("sumo_edge_id")
+                if sumo_edge_id:
+                    tf = traci_bridge.calculate_traffic_factor(sumo_edge_id, base_speed)
+                    if tf is not None:
+                        edge_data["traffic_factor"] = tf
+                updated.append((dst, edge_data))
+            self.adj[src] = updated
 
     # ── shortest path ─────────────────────────────────────────
 
