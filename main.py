@@ -23,7 +23,12 @@ from graph import Graph
 from simulator import Simulator
 from savings import clarke_wright, compute_savings_matrix
 from local_search import two_opt, or_opt
-from logger import print_network_statistics, print_summary, print_top_savings
+from logger import (
+    print_network_statistics,
+    print_sumo_electric_infrastructure_length,
+    print_summary,
+    print_top_savings,
+)
 from config import CW_DEFAULTS, PARALLEL_WORKERS
 
 
@@ -109,11 +114,12 @@ def _run(args):
 
     # ── load graph (JSON or SUMO) ─────────────────────────────
     traci_bridge = None
+    instance_dict = None
     try:
         if args.sumo_cfg:
             from sumo_converter import build_graph_from_sumo
 
-            graph, _ = build_graph_from_sumo(
+            graph, instance_dict = build_graph_from_sumo(
                 net_file_or_cfg=args.sumo_cfg,
                 n_customers=args.customers,
                 n_cs=args.cs,
@@ -142,6 +148,8 @@ def _run(args):
         print(f"E-road ends    : {graph.electric_road_ends}")
         print()
         print_network_statistics(graph)
+        if instance_dict is not None:
+            print_sumo_electric_infrastructure_length(instance_dict)
 
         # ── savings computation ────────────────────────────────────
         t_sav_start = time.perf_counter()

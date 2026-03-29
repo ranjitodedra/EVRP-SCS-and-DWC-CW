@@ -4,11 +4,44 @@ Formatted console output and optional CSV / savings-matrix printing.
 
 from __future__ import annotations
 
+from typing import Any, Dict
+
 from simulator import RouteResult
 from config import BASE_SPEED, BATTERY_THRESHOLD
 
 
 # ── network / instance statistics ─────────────────────────────
+
+def total_electric_link_length_network_km(instance_dict: Dict[str, Any]) -> float:
+    """
+    Sum lengths (km) of every undirected electric link in the instance once.
+
+    Uses ``sumo_edge_id`` when present to identify a physical SUMO link; otherwise
+    uses a canonical undirected node pair ``(min(from,to), max(from,to))``.
+    """
+    seen: dict[tuple, float] = {}
+    for e in instance_dict.get("edges", []):
+        if e.get("type") != "electric":
+            continue
+        dist = float(e["distance"])
+        sid = e.get("sumo_edge_id")
+        if sid is not None:
+            key = ("sumo", sid)
+        else:
+            a, b = e["from"], e["to"]
+            if a > b:
+                a, b = b, a
+            key = ("pair", a, b)
+        if key not in seen:
+            seen[key] = dist
+    return sum(seen.values())
+
+
+def print_sumo_electric_infrastructure_length(instance_dict: Dict[str, Any]) -> None:
+    """Print total electric-link infrastructure length for a SUMO-built instance."""
+    km = total_electric_link_length_network_km(instance_dict)
+    print(f"Total Electric-Link Length (network): {km:.4f} km")
+
 
 def print_network_statistics(graph) -> None:
     """Print node counts, edge count, base speed, and battery threshold."""

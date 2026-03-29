@@ -23,7 +23,7 @@ BASE_SPEED = 50               # km/h
 # ── Battery defaults ───────────────────────────────────────────
 BATTERY_CAPACITY = 100        # kWh
 INITIAL_BATTERY_PERCENT = 100 # %
-BATTERY_THRESHOLD = 0.05 # γ  (mileage-anxiety coefficient)
+BATTERY_THRESHOLD = 0.20      # γ  (mileage-anxiety coefficient)
 
 # ── Static Charging Station defaults ───────────────────────────
 CHARGING_POWER = 100          # kW
